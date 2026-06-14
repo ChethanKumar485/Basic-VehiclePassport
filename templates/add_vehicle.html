@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Add Vehicle - Vehicle Passport{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <h1>Register a Vehicle</h1>
+    <p class="subtitle">Create a digital passport for your vehicle to begin AI health tracking.</p>
+
+    <form method="POST" class="card form-card">
+        <div class="form-row">
+            <label for="name">Vehicle Name / Model</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Honda City ZX" required>
+        </div>
+
+        <div class="form-row">
+            <label for="number_plate">Number Plate</label>
+            <input type="text" id="number_plate" name="number_plate" placeholder="e.g. KA-09-AB-1234" required>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="owner">Owner Name</label>
+                <input type="text" id="owner" name="owner" placeholder="e.g. Gagan">
+            </div>
+            <div class="form-row">
+                <label for="vehicle_type">Vehicle Type</label>
+                <select id="vehicle_type" name="vehicle_type">
+                    <option value="Car">Car</option>
+                    <option value="Bike">Bike / Motorcycle</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Truck">Truck</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="year">Manufacturing Year</label>
+                <input type="number" id="year" name="year" placeholder="e.g. 2021" min="1980" max="2026">
+            </div>
+            <div class="form-row">
+                <label for="mileage">Current Mileage (km)</label>
+                <input type="number" id="mileage" name="mileage" placeholder="e.g. 35000" min="0">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label for="last_service_km">Mileage at Last Service (km)</label>
+            <input type="number" id="last_service_km" name="last_service_km" placeholder="e.g. 30000" min="0">
+        </div>
+
+        <button type="submit" class="btn-primary btn-full">Create Passport</button>
+    </form>
+</section>
+{% endblock %}

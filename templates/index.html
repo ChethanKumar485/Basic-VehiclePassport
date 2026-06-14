@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Vehicle Passport{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div>
+        <h1>Your Vehicle Fleet</h1>
+        <p class="subtitle">Real-time AI diagnostics for every vehicle in your passport.</p>
+    </div>
+    <a href="{{ url_for('add_vehicle') }}" class="btn-primary">+ Register New Vehicle</a>
+</section>
+
+{% if vehicle_summaries %}
+<div class="grid">
+    {% for item in vehicle_summaries %}
+    <a href="{{ url_for('vehicle_detail', vehicle_id=item.vehicle.id) }}" class="card vehicle-card">
+        <div class="card-top">
+            <div>
+                <h3>{{ item.vehicle.name }}</h3>
+                <p class="plate">{{ item.vehicle.number_plate }}</p>
+            </div>
+            <span class="badge badge-{{ item.status_class }}">{{ item.status }}</span>
+        </div>
+
+        <div class="score-row">
+            {% if item.score is not none %}
+            <div class="score-ring" style="--score: {{ item.score }}">
+                <span>{{ item.score }}</span>
+            </div>
+            {% else %}
+            <div class="score-ring score-ring-empty">
+                <span>--</span>
+            </div>
+            {% endif %}
+            <div class="card-meta">
+                <p><strong>{{ item.vehicle.vehicle_type or "Vehicle" }}</strong> &middot; {{ item.vehicle.year or "—" }}</p>
+                <p>Mileage: {{ item.vehicle.mileage }} km</p>
+                <p>Owner: {{ item.vehicle.owner or "—" }}</p>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">🛠️</div>
+    <h2>No vehicles registered yet</h2>
+    <p>Add your first vehicle to start receiving AI-powered health insights.</p>
+    <a href="{{ url_for('add_vehicle') }}" class="btn-primary">+ Add Vehicle</a>
+</div>
+{% endif %}
+{% endblock %}

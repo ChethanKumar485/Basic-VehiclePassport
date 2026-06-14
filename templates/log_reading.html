@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Log Reading - {{ vehicle.name }}{% endblock %}
+
+{% block content %}
+<section class="form-page">
+    <h1>Log Sensor Reading</h1>
+    <p class="subtitle">For <strong>{{ vehicle.name }}</strong> ({{ vehicle.number_plate }}). The AI Brain will analyze this instantly.</p>
+
+    <form method="POST" class="card form-card">
+        <div class="form-row">
+            <label for="mileage">Current Odometer Reading (km)</label>
+            <input type="number" id="mileage" name="mileage" value="{{ vehicle.mileage }}" min="0">
+        </div>
+
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="engine_temp">Engine Temperature (°C)</label>
+                <input type="number" step="0.1" id="engine_temp" name="engine_temp" placeholder="e.g. 90" required>
+            </div>
+            <div class="form-row">
+                <label for="oil_level">Oil Level (%)</label>
+                <input type="number" step="0.1" id="oil_level" name="oil_level" placeholder="e.g. 85" required>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="battery_voltage">Battery Voltage (V)</label>
+                <input type="number" step="0.01" id="battery_voltage" name="battery_voltage" placeholder="e.g. 12.6" required>
+            </div>
+            <div class="form-row">
+                <label for="tire_pressure">Tire Pressure (PSI)</label>
+                <input type="number" step="0.1" id="tire_pressure" name="tire_pressure" placeholder="e.g. 32" required>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-row">
+                <label for="brake_pad">Brake Pad Remaining (%)</label>
+                <input type="number" step="0.1" id="brake_pad" name="brake_pad" placeholder="e.g. 70" required>
+            </div>
+            <div class="form-row">
+                <label for="coolant_level">Coolant Level (%)</label>
+                <input type="number" step="0.1" id="coolant_level" name="coolant_level" placeholder="e.g. 80" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <label for="fuel_efficiency">Fuel Efficiency (km/l, relative score)</label>
+            <input type="number" step="0.1" id="fuel_efficiency" name="fuel_efficiency" placeholder="e.g. 15" required>
+        </div>
+
+        <button type="submit" class="btn-primary btn-full">Analyze with AI Brain</button>
+    </form>
+</section>
+{% endblock %}

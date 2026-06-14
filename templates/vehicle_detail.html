@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}{{ vehicle.name }} - Vehicle Passport{% endblock %}
+
+{% block content %}
+<section class="detail-header">
+    <div>
+        <h1>{{ vehicle.name }}</h1>
+        <p class="subtitle">{{ vehicle.number_plate }} &middot; {{ vehicle.vehicle_type or "Vehicle" }} &middot; {{ vehicle.year or "—" }} &middot; {{ vehicle.mileage }} km</p>
+        <p class="subtitle">Owner: {{ vehicle.owner or "—" }} &middot; Last service at {{ vehicle.last_service_km }} km</p>
+    </div>
+    <div class="detail-actions">
+        <a href="{{ url_for('log_reading', vehicle_id=vehicle.id) }}" class="btn-primary">+ Log New Reading</a>
+        <form method="POST" action="{{ url_for('delete_vehicle', vehicle_id=vehicle.id) }}" onsubmit="return confirm('Remove this vehicle and all its data?');">
+            <button type="submit" class="btn-danger">Delete</button>
+        </form>
+    </div>
+</section>
+
+{% if report %}
+<section class="report-grid">
+    <div class="card report-summary">
+        <div class="score-ring big" style="--score: {{ report.overall_score }}">
+            <span>{{ report.overall_score }}</span>
+        </div>
+        <div>
+            <h2>AI Health Status: <span class="badge badge-{{ report.status_class }}">{{ report.status }}</span></h2>
+            <p class="subtitle">Last analyzed: {{ report.timestamp }}</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Component Health Breakdown</h3>
+        <div class="component-bars">
+            {% for component, score in report.component_scores.items() %}
+            <div class="component-row">
+                <span class="component-label">{{ component.replace('_', ' ').title() }}</span>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width: {{ score }}%;"></div>
+                </div>
+                <span class="component-score">{{ score }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>AI Diagnostic Alerts</h3>
+        <div class="alert-list">
+            {% for alert in report.alerts %}
+            <div class="alert alert-{{ alert.level }}">
+                <strong>{{ alert.component }}:</strong> {{ alert.message }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Estimated Remaining Useful Life</h3>
+        <div class="rul-grid">
+            {% for component, estimate in report.remaining_life.items() %}
+            <div class="rul-item">
+                <span class="rul-component">{{ component }}</span>
+                <span class="rul-value">{{ estimate }}{% if estimate is number %} km{% endif %}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card chart-card">
+        <h3>Health Score History</h3>
+        <canvas id="healthChart" height="120"></canvas>
+    </div>
+</section>
+
+<section class="card history-card">
+    <h3>Reading History</h3>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th>Engine °C</th>
+                    <th>Oil %</th>
+                    <th>Battery V</th>
+                    <th>Tire PSI</th>
+                    <th>Brake %</th>
+                    <th>Coolant %</th>
+                    <th>Fuel</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in readings %}
+                <tr>
+                    <td>{{ r.created_at }}</td>
+                    <td><strong>{{ r.health_score }}</strong></td>
+                    <td>{{ r.status }}</td>
+                    <td>{{ r.engine_temp }}</td>
+                    <td>{{ r.oil_level }}</td>
+                    <td>{{ r.battery_voltage }}</td>
+                    <td>{{ r.tire_pressure }}</td>
+                    <td>{{ r.brake_pad }}</td>
+                    <td>{{ r.coolant_level }}</td>
+                    <td>{{ r.fuel_efficiency }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+    const ctx = document.getElementById('healthChart');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ chart_data.labels | tojson }},
+            datasets: [{
+                label: 'Health Score',
+                data: {{ chart_data.scores | tojson }},
+                borderColor: '#5b8cff',
+                backgroundColor: 'rgba(91,140,255,0.15)',
+                fill: true,
+                tension: 0.35,
+                pointRadius: 3,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { min: 0, max: 100 }
+            }
+        }
+    });
+</script>
+
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">📊</div>
+    <h2>No readings logged yet</h2>
+    <p>Log your first sensor reading to activate the AI Brain's diagnostics for this vehicle.</p>
+    <a href="{{ url_for('log_reading', vehicle_id=vehicle.id) }}" class="btn-primary">+ Log New Reading</a>
+</div>
+{% endif %}
+{% endblock %}
