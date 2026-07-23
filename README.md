@@ -146,6 +146,15 @@ These values and weights can be tuned directly in `brain.py` to match
 real-world vehicle specifications or specific OBD-II sensor data.
 
 ---
+## 🌐 Live Demo
+
+Experience the application online:
+
+🔗 **Vehicle Passport:** https://basic-vehiclepassport.onrender.com
+
+> **Note:** This project is hosted on Render's free tier. The application may take 30–60 seconds to start if it has been inactive.
+> 
+---
 
 ## 🔮 Future Enhancements
 
