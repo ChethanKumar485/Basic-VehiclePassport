@@ -23,23 +23,6 @@ DB_PATH = os.path.join(BASE_DIR, "data", "vehicle_passport.db")
 app = Flask(__name__)
 app.secret_key = "vehicle-passport-secret-key-change-in-production"
 
-# Create the data directory and database when the app starts
-def init_db():
-    os.makedirs(os.path.join(BASE_DIR, "data"), exist_ok=True)
-    conn = sqlite3.connect(DB_PATH)
-    ...
-    conn.commit()
-    conn.close()
-
-# Initialize database
-init_db()
-
-# ----------------------------------------------------------------------
-# ROUTES
-# ----------------------------------------------------------------------
-@app.route("/")
-def index():
-
 
 # ----------------------------------------------------------------------
 # DATABASE HELPERS
@@ -94,6 +77,10 @@ def init_db():
     )
     conn.commit()
     conn.close()
+
+
+# Initialize database at import time (so it also runs under gunicorn, not just __main__)
+init_db()
 
 
 # ----------------------------------------------------------------------
@@ -274,9 +261,5 @@ def api_report(vehicle_id):
     return jsonify(brain.full_report())
 
 
-if __name__ == "__main__":
-    init_db()
-    app.run(debug=True, host="0.0.0.0", port=5000)
-  
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
